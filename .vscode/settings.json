@@ -1,0 +1,27 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "DB Lesson 1",
+            "database": "mydb.db"
+        },
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "DB Lesson 1",
+            "database": "C:\\Users\\USER\\Documents\\Data Engineering\\DE Projects\\SQL\\mydb.db"
+        },
+        {
+            "ssh": "Disabled",
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "My PostgreSql",
+            "username": "postgres",
+            "password": "lavida loca",
+            "database": "postgres"
+        }
+    ]
+}
