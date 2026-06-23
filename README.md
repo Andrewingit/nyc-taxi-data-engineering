@@ -110,5 +110,19 @@ Based on **41,169,664 cleaned taxi trips** across all 12 months:
 [NYC TLC Trip Record Data](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page)
 
 ## Status
+Pipeline complete, data ingested, loaded, combined, cleaned and analyzed.
 
-✅ Pipeline complete, data ingested, loaded, combined, cleaned and analyzed.
+## Performance Optimization
+
+Added a datetime index on `yellow_taxi_2024_clean` to dramatically improve query speed:
+
+```sql
+CREATE INDEX idx_pickup_datetime ON yellow_taxi_2024_clean (tpep_pickup_datetime);
+```
+
+| Metric | Before Index | After Index | Improvement |
+|---|---|---|---|
+| Query execution time | 23,261 ms | 601 ms | **38x faster** |
+| Query type | Full table scan (41M rows) | Index seek (direct lookup) | |
+
+> Tested against a date range filter on 41 million rows using `EXPLAIN ANALYZE`.
