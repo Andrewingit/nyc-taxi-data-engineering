@@ -9,18 +9,66 @@ NYC Yellow Taxi trip data for the full year 2024 using Python and PostgreSQL.
   in Parquet format directly from the NYC TLC public dataset
 - Loads ~41 million trip records into a PostgreSQL database
 - Combines 12 monthly tables into a single unified table for full-year analysis
-- Performs data quality checks — identifying and filtering out records with 
+- Performs data quality checks : identifying and filtering out records with 
   impossible timestamps (trips dated outside 2024)
 - Creates a clean, analysis-ready table as a separate layer from raw data
 - Includes SQL queries for exploring patterns across the full dataset
 
 ## Tech stack
 
-- **Python** — automated data ingestion (urllib, pandas, SQLAlchemy)
-- **PostgreSQL** — data storage and querying
+- **Python** : automated data ingestion (urllib, pandas, SQLAlchemy)
+- **PostgreSQL** : data storage and querying
 - **psycopg2 / SQLAlchemy** — Python-to-database connection layer
 - **SQL** — data transformation, cleaning, and analysis
-- **Git / GitHub** — version control and project documentation
+- **Git / GitHub** : version control and project documentation
+
+## Architecture
+
+This project follows a layered ELT (Extract, Load, Transform) design:
+[Source]        NYC TLC Public Dataset (Parquet files, hosted on public CDN)
+
+↓
+
+[Extract]       Python (urllib): automated download of 12 monthly files
+
+↓
+
+[Load]          pandas + SQLAlchemy + psycopg2: raw data loaded into PostgreSQL
+
+as 12 separate monthly tables (yellow_taxi_2024_01 through _12)
+
+↓
+
+[Transform]     SQL : two transformation layers:
+
+Layer 1: UNION ALL combines 12 tables → yellow_taxi_2024_full
+
+Layer 2: Date filter removes 56 bad records → yellow_taxi_2024_clean
+
+↓
+
+[Serve]         SQL queries against yellow_taxi_2024_clean : single source of truth
+
+for all downstream analysis
+
+### Reliability decisions
+
+| Decision | Reason |
+|---|---|
+| Fresh DB connection per month | Prevents one failed load from cascading into subsequent months |
+| Raw layer preserved separately | Bad data decisions are always reversible |
+| `IF NOT EXISTS` guards | Pipeline can be safely re-run without crashing |
+| Raw data excluded from Git | Parquet files too large for version control — code tracked, data stays local |
+| Descriptive commit history | Every pipeline change is auditable and recoverable |
+
+### What would be added in production
+
+- Automated scheduling (Apache Airflow or cron) to run monthly when new TLC data drops
+- Row count validation checks after each load to confirm expected data volumes
+- Structured error logging per pipeline step with timestamps
+- PostgreSQL role-based access control
+- Automated database backups
+
 
 ## Project structure
 NYC Taxi/
@@ -63,4 +111,4 @@ Based on **41,169,664 cleaned taxi trips** across all 12 months:
 
 ## Status
 
-✅ Pipeline complete — data ingested, loaded, combined, cleaned and analyzed.
+✅ Pipeline complete, data ingested, loaded, combined, cleaned and analyzed.
