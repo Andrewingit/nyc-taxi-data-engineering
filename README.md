@@ -27,18 +27,22 @@ This project follows a layered ELT (Extract, Load, Transform) design:
 [Source]        NYC TLC Public Dataset (Parquet files, hosted on public CDN)
 
 ↓
+
 [Extract]       Python (urllib), automated download of 12 monthly files
 
 ↓
+
 [Load]          pandas + SQLAlchemy + psycopg2, raw data loaded into PostgreSQL as 12 separate monthly tables (yellow_taxi_2024_01 through _12)
 
 ↓
+
 [Transform]     SQL, two transformation layers:
 Layer 1: UNION ALL combines 12 tables → yellow_taxi_2024_full
 
 Layer 2: Date filter removes 56 bad records → yellow_taxi_2024_clean
 
 ↓
+
 [Serve]         SQL queries against yellow_taxi_2024_clean, single source of truth for all downstream analysis
 
 ### Reliability decisions
