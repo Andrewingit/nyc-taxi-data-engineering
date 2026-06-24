@@ -27,19 +27,19 @@ This project follows a layered ELT (Extract, Load, Transform) design:
 [Source]        NYC TLC Public Dataset (Parquet files, hosted on public CDN)
 
 ↓
-[Extract]       Python (urllib) — automated download of 12 monthly files
+[Extract]       Python (urllib), automated download of 12 monthly files
 
 ↓
-[Load]          pandas + SQLAlchemy + psycopg2 — raw data loaded into PostgreSQL as 12 separate monthly tables (yellow_taxi_2024_01 through _12)
+[Load]          pandas + SQLAlchemy + psycopg2, raw data loaded into PostgreSQL as 12 separate monthly tables (yellow_taxi_2024_01 through _12)
 
 ↓
-[Transform]     SQL — two transformation layers:
+[Transform]     SQL, two transformation layers:
 Layer 1: UNION ALL combines 12 tables → yellow_taxi_2024_full
 
 Layer 2: Date filter removes 56 bad records → yellow_taxi_2024_clean
 
 ↓
-[Serve]         SQL queries against yellow_taxi_2024_clean — single source of truth for all downstream analysis
+[Serve]         SQL queries against yellow_taxi_2024_clean, single source of truth for all downstream analysis
 
 ### Reliability decisions
 
@@ -48,7 +48,7 @@ Layer 2: Date filter removes 56 bad records → yellow_taxi_2024_clean
 | Fresh DB connection per month | Prevents one failed load from cascading into subsequent months |
 | Raw layer preserved separately | Bad data decisions are always reversible |
 | `IF NOT EXISTS` guards | Pipeline can be safely re-run without crashing |
-| Raw data excluded from Git | Parquet files too large for version control — code tracked, data stays local |
+| Raw data excluded from Git | Parquet files too large for version control, code tracked, data stays local |
 | Descriptive commit history | Every pipeline change is auditable and recoverable |
 
 ### What would be added in production
@@ -123,4 +123,4 @@ CREATE INDEX idx_pickup_datetime ON yellow_taxi_2024_clean (tpep_pickup_datetime
 
 ## Status
 
-Pipeline complete — data ingested, loaded, combined, cleaned, optimized and analyzed.
+Pipeline complete : data ingested, loaded, combined, cleaned, optimized and analyzed.
