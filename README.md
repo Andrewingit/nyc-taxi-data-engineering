@@ -5,12 +5,10 @@ NYC Yellow Taxi trip data for the full year 2024 using Python and PostgreSQL.
 
 ## What this project does
 
-- Automatically downloads all 12 months of NYC Yellow Taxi trip data (2024) 
-  in Parquet format directly from the NYC TLC public dataset
+- Automatically downloads all 12 months of NYC Yellow Taxi trip data (2024) in Parquet format directly from the NYC TLC public dataset
 - Loads ~41 million trip records into a PostgreSQL database
 - Combines 12 monthly tables into a single unified table for full-year analysis
-- Performs data quality checks : identifying and filtering out records with 
-  impossible timestamps (trips dated outside 2024)
+- Performs data quality checks : identifying and filtering out records with impossible timestamps (trips dated outside 2024)
 - Creates a clean, analysis-ready table as a separate layer from raw data
 - Includes SQL queries for exploring patterns across the full dataset
 
@@ -26,30 +24,16 @@ NYC Yellow Taxi trip data for the full year 2024 using Python and PostgreSQL.
 
 This project follows a layered ELT (Extract, Load, Transform) design:
 [Source]        NYC TLC Public Dataset (Parquet files, hosted on public CDN)
-
 ↓
-
 [Extract]       Python (urllib): automated download of 12 monthly files
-
 ↓
-
-[Load]          pandas + SQLAlchemy + psycopg2: raw data loaded into PostgreSQL
-
-as 12 separate monthly tables (yellow_taxi_2024_01 through _12)
-
+[Load]          pandas + SQLAlchemy + psycopg2: raw data loaded into PostgreSQL as 12 separate monthly tables (yellow_taxi_2024_01 through _12)
 ↓
-
 [Transform]     SQL : two transformation layers:
-
 Layer 1: UNION ALL combines 12 tables → yellow_taxi_2024_full
-
 Layer 2: Date filter removes 56 bad records → yellow_taxi_2024_clean
-
 ↓
-
-[Serve]         SQL queries against yellow_taxi_2024_clean : single source of truth
-
-for all downstream analysis
+[Serve]         SQL queries against yellow_taxi_2024_clean : single source of truth for all downstream analysis
 
 ### Reliability decisions
 
@@ -112,6 +96,7 @@ Based on **41,169,664 cleaned taxi trips** across all 12 months:
 ## Status
 Pipeline complete, data ingested, loaded, combined, cleaned and analyzed.
 
+<<<<<<< HEAD
 ## Performance Optimization
 
 Added a datetime index on `yellow_taxi_2024_clean` to dramatically improve query speed:
@@ -126,3 +111,6 @@ CREATE INDEX idx_pickup_datetime ON yellow_taxi_2024_clean (tpep_pickup_datetime
 | Query type | Full table scan (41M rows) | Index seek (direct lookup) | |
 
 > Tested against a date range filter on 41 million rows using `EXPLAIN ANALYZE`.
+=======
+✅ Pipeline complete, data ingested, loaded, combined, cleaned and analyzed.
+>>>>>>> d610ad8abb429c60bfa8c71952010733dad735b8
